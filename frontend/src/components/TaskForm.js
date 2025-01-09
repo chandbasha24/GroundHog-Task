@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const TaskForm = ({ taskEdit, TaskAdd }) => {
+const TaskForm = ({ TaskAdd }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('Pending');
     const [priority, setPriority] = useState('Medium');
     const [dueDate, setDueDate] = useState('');
-
-    useEffect(() => {
-        if (taskEdit) {
-            setTitle(taskEdit.title);
-            setDescription(taskEdit.descripSStion);
-            setStatus(taskEdit.status);
-            setPriority(taskEdit.priority);
-            setDueDate(taskEdit.dueDate ? new Date(taskEdit.dueDate).toISOString().substring(0, 10) : '');
-        }
-    }, [taskEdit]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,17 +16,12 @@ const TaskForm = ({ taskEdit, TaskAdd }) => {
             description,
             status,
             priority,
-            dueDate
+            dueDate,
         };
 
         try {
-            if (taskEdit) {
-
-                await axios.put(`http://localhost:5000/tasks/${taskEdit._id}`, task);
-            } else {
-
-                await axios.post('http://localhost:5000/tasks', task);
-            }
+            // Add a new task
+            await axios.post('http://localhost:5000/tasks', task);
             TaskAdd();
             setTitle('');
             setDescription('');
@@ -50,7 +35,7 @@ const TaskForm = ({ taskEdit, TaskAdd }) => {
 
     return (
         <div>
-            <h2>{taskEdit ? 'Edit Task' : 'Add New Task'}</h2>
+            <h2>Add New Task</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -79,7 +64,7 @@ const TaskForm = ({ taskEdit, TaskAdd }) => {
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
                 />
-                <button type="submit">{taskEdit ? 'Update' : 'Add'} Task</button>
+                <button type="submit">Add Task</button>
             </form>
         </div>
     );
