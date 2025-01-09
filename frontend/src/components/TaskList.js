@@ -13,12 +13,16 @@ const TaskList = ({ onEdit }) => {
         try {
             const { status, priority } = filters;
             const response = await axios.get('http://localhost:5000/tasks', {
-                params: { status, priority }
+                params: { status, priority },
             });
             setTasks(response.data);
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
+    };
+
+    const handleFilterChange = (e, filterType) => {
+        setFilters((prev) => ({ ...prev, [filterType]: e.target.value }));
     };
 
     const handleDelete = async (id) => {
@@ -34,13 +38,13 @@ const TaskList = ({ onEdit }) => {
         <div>
             <h2>Task List</h2>
             <div>
-                <select onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
+                <select onChange={(e) => handleFilterChange(e, 'status')}>
                     <option value="">Status</option>
                     <option value="Pending">Pending</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
                 </select>
-                <select onChange={(e) => setFilters({ ...filters, priority: e.target.value })}>
+                <select onChange={(e) => handleFilterChange(e, 'priority')}>
                     <option value="">All Priority</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -65,7 +69,7 @@ const TaskList = ({ onEdit }) => {
                             <td>{task.priority}</td>
                             <td>{task.dueDate}</td>
                             <td>
-                                <button onClick={() => onEdit && onEdit(task)}>Edit</button>
+                                <button onClick={() => onEdit(task)}>Edit</button>
                                 <button onClick={() => handleDelete(task._id)}>Delete</button>
                             </td>
                         </tr>
